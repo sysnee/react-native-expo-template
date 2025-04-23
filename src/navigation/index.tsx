@@ -6,6 +6,7 @@ import { ActivityIndicator, View, Text } from 'react-native';
 import LoginScreen from '../screens/LoginScreen';
 import HomeScreen from '../screens/HomeScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import WelcomeScreen from '../screens/WelcomeScreen';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import { colors } from '../theme';
 
@@ -14,13 +15,14 @@ export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
   Register: undefined;
+  Welcome: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 // Componente de navegação principal
 const AppNavigator = () => {
-  const { isLoggedIn, loading } = useAuth();
+  const { isLoggedIn, loading, user } = useAuth();
 
   // Exibir indicador de carregamento enquanto verifica o estado de autenticação
   if (loading) {
@@ -34,20 +36,23 @@ const AppNavigator = () => {
     );
   }
 
-  // Decidir a tela inicial com base no estado de login
-  const initialRouteName = isLoggedIn ? 'Home' : 'Login';
-
   return (
     <Stack.Navigator 
-      initialRouteName={initialRouteName}
+      initialRouteName={isLoggedIn ? "Welcome" : "Login"}
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: 'white' },
       }}
     >
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Home" component={HomeScreen} />
+      {/* Todas as telas estão sempre disponíveis, mas controlamos o acesso através de redirecionamentos */}
+      <Stack.Screen 
+        name="Login" 
+        component={LoginScreen} 
+        options={{ gestureEnabled: !isLoggedIn }}
+      />
       <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
     </Stack.Navigator>
   );
 };

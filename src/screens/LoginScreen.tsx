@@ -44,7 +44,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     try {
       setIsLoading(true);
       await login({ email, password });
-      // A navegação acontecerá automaticamente pelo AuthContext
+      // O redirecionamento agora é manipulado automaticamente pelo Navigator
     } catch (error) {
       // Tratamento de erro melhorado
       let errorMessage = 'Ocorreu um erro ao fazer login. Tente novamente.';

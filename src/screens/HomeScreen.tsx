@@ -13,6 +13,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { colors, typography, spacing } from '../theme';
 import { useAuth } from '../contexts/AuthContext';
 import KaiLogo from '../components/KaiLogo';
+import { CommonActions } from '@react-navigation/native';
 
 type HomeScreenProps = {
   navigation: any;
@@ -34,11 +35,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           text: 'Sair',
           onPress: async () => {
             await logout();
-            // Navegação explícita para a tela de login após o logout
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Login' }],
-            });
+            // Usar CommonActions.reset para garantir a navegação correta, independente da estrutura atual
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              })
+            );
           },
         },
       ],
@@ -57,7 +60,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       >
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.header}>
-            <KaiLogo width={100} height={60} />
+            <KaiLogo width={200} height={80} />
           </View>
           
           <View style={styles.content}>
