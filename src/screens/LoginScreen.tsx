@@ -7,13 +7,16 @@ import {
   TextInput,
   Platform,
   Image,
-  Dimensions
+  Dimensions,
+  ActivityIndicator,
+  Alert
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import KaiLogo from '../components/KaiLogo';
 import { colors, typography, spacing, borderRadius } from '../theme';
 import { Feather } from '@expo/vector-icons';
+import { useAuth } from '../contexts/AuthContext';
 
 type LoginScreenProps = {
   navigation: any;
@@ -25,9 +28,29 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await login({ email, password });
+      // A navegação acontecerá automaticamente pelo AuthContext
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao fazer login';
+      Alert.alert('Erro de login', errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -56,6 +79,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                 placeholderTextColor="rgba(255, 255, 255, 0.7)"
                 keyboardType="email-address"
                 autoCapitalize="none"
+                editable={!isLoading}
               />
             </View>
             
@@ -67,10 +91,12 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                 placeholder="Senha"
                 placeholderTextColor="rgba(255, 255, 255, 0.7)"
                 secureTextEntry={!showPassword}
+                editable={!isLoading}
               />
               <TouchableOpacity 
                 style={styles.eyeIcon} 
                 onPress={togglePasswordVisibility}
+                disabled={isLoading}
               >
                 <Feather 
                   name={showPassword ? "eye" : "eye-off"} 
@@ -87,16 +113,21 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
               style={styles.loginButton}
             >
               <TouchableOpacity 
-                style={styles.loginButtonInner} 
-                onPress={() => navigation.navigate('Home')}
+                style={styles.loginButtonInner}
+                onPress={handleLogin}
+                disabled={isLoading}
               >
-                <Text style={styles.loginButtonText}>Entrar</Text>
+                {isLoading ? (
+                  <ActivityIndicator color="#FFFFFF" size="small" />
+                ) : (
+                  <Text style={styles.loginButtonText}>Entrar</Text>
+                )}
               </TouchableOpacity>
             </LinearGradient>
             
             <View style={styles.forgotPasswordContainer}>
               <Text style={styles.forgotPasswordText}>Esqueceu sua senha? </Text>
-              <TouchableOpacity>
+              <TouchableOpacity disabled={isLoading}>
                 <Text style={styles.forgotPasswordLink}>Redefinir senha</Text>
               </TouchableOpacity>
             </View>
