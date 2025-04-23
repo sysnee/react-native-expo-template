@@ -3,12 +3,12 @@
 export const colors = {
   primary: '#4FD1C5',
   primaryDark: '#3EAFA5',
-  secondary: '#35B6FF',
-  text: '#333333',
-  textSecondary: '#666666',
+  secondary: '#FF8C42',
+  text: '#FFFFFF',
+  textSecondary: '#FFFFFFCC',
   background: '#FFFFFF',
-  inputBackground: '#FAFAFA',
-  border: '#DDDDDD',
+  inputBackground: '#FFFFFF33',
+  border: '#FFFFFF33',
   success: '#00C853',
   error: '#FF5252',
   warning: '#FFD600',
@@ -18,9 +18,13 @@ export const colors = {
     dark: '#9E9E9E',
   },
   gradient: {
-    start: '#88E1D4',
-    middle: '#D4CB92',
-    end: '#A1E9B0'
+    start: '#54985F',
+    middle: '#BAA35B',
+    end: '#FF7342'
+  },
+  button: {
+    start: '#88D498',
+    end: '#F8A978'
   }
 };
 

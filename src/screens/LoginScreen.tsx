@@ -6,91 +6,102 @@ import {
   TouchableOpacity, 
   TextInput,
   Platform,
-  ScrollView,
-  ImageBackground
+  Image,
+  Dimensions
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import KaiLogo from '../components/KaiLogo';
-import { colors, typography, spacing, borderRadius, shadows } from '../theme';
+import { colors, typography, spacing, borderRadius } from '../theme';
+import { Feather } from '@expo/vector-icons';
 
 type LoginScreenProps = {
   navigation: any;
 };
 
+const { width, height } = Dimensions.get('window');
+
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <View style={styles.container}>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <LinearGradient
         colors={[colors.gradient.start, colors.gradient.middle, colors.gradient.end]}
         style={styles.background}
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0.8 }}
-        locations={[0, 0.5, 1]}
+        end={{ x: 1, y: 0 }}
       >
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.content}>
           <View style={styles.logoContainer}>
-            <KaiLogo width={180} height={80} />
+            <KaiLogo width={160} height={100} />
           </View>
           
           <View style={styles.formContainer}>
-            <LinearGradient
-              colors={[colors.primary, colors.primaryDark]}
-              style={styles.formHeader}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-            >
-              <View style={styles.formHeaderInner} />
-            </LinearGradient>
-            
-            <Text style={styles.title}>Bem-vindo ao Kai Prevention</Text>
-            <Text style={styles.subtitle}>Faça login para acessar sua conta</Text>
+            <Text style={styles.title}>ENTRE NA SUA CONTA</Text>
             
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Email</Text>
               <TextInput
                 style={styles.input}
                 value={email}
                 onChangeText={setEmail}
-                placeholder="Seu email"
+                placeholder="E-mail"
+                placeholderTextColor="rgba(255, 255, 255, 0.7)"
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
             </View>
             
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Senha</Text>
               <TextInput
                 style={styles.input}
                 value={password}
                 onChangeText={setPassword}
-                placeholder="Sua senha"
-                secureTextEntry
+                placeholder="Senha"
+                placeholderTextColor="rgba(255, 255, 255, 0.7)"
+                secureTextEntry={!showPassword}
               />
-              <TouchableOpacity style={styles.forgotPassword}>
-                <Text style={styles.forgotPasswordText}>Esqueceu a senha?</Text>
+              <TouchableOpacity 
+                style={styles.eyeIcon} 
+                onPress={togglePasswordVisibility}
+              >
+                <Feather 
+                  name={showPassword ? "eye" : "eye-off"} 
+                  size={20} 
+                  color="rgba(255, 255, 255, 0.8)" 
+                />
               </TouchableOpacity>
             </View>
             
-            <TouchableOpacity 
-              style={styles.loginButton} 
-              onPress={() => navigation.navigate('Home')}
+            <LinearGradient
+              colors={[colors.button.start, colors.button.end]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.loginButton}
             >
-              <Text style={styles.loginButtonText}>Entrar</Text>
-            </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.loginButtonInner} 
+                onPress={() => navigation.navigate('Home')}
+              >
+                <Text style={styles.loginButtonText}>Entrar</Text>
+              </TouchableOpacity>
+            </LinearGradient>
             
-            <View style={styles.registerContainer}>
-              <Text style={styles.registerText}>Não tem uma conta? </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                <Text style={styles.registerLink}>Registre-se</Text>
+            <View style={styles.forgotPasswordContainer}>
+              <Text style={styles.forgotPasswordText}>Esqueceu sua senha? </Text>
+              <TouchableOpacity>
+                <Text style={styles.forgotPasswordLink}>Redefinir senha</Text>
               </TouchableOpacity>
             </View>
           </View>
-        </ScrollView>
+        </View>
       </LinearGradient>
     </View>
   );
@@ -105,108 +116,83 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  scrollView: {
+  content: {
     flex: 1,
-    marginTop: Platform.OS === 'ios' ? 50 : 30,
-  },
-  scrollContainer: {
     paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xl,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: 40,
-    marginBottom: 50,
+    marginBottom: 80,
   },
   formContainer: {
-    flex: 1,
-    backgroundColor: colors.background,
-    padding: spacing.lg,
-    borderRadius: borderRadius.lg,
-    ...shadows.md,
-    borderWidth: 1,
-    borderColor: colors.gradient.middle,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  formHeader: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 8,
-  },
-  formHeaderInner: {
-    flex: 1,
+    width: '100%',
+    maxWidth: 400,
+    alignItems: 'center',
   },
   title: {
-    fontSize: typography.fontSizes.xxl,
+    fontSize: typography.fontSizes.xl,
     fontWeight: 'bold',
     color: colors.text,
-    marginTop: spacing.md,
-    marginBottom: spacing.xs,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: typography.fontSizes.md,
-    color: colors.textSecondary,
-    marginBottom: spacing.xl,
-    textAlign: 'center',
+    marginBottom: 50,
+    letterSpacing: 2,
   },
   inputContainer: {
-    marginBottom: spacing.lg,
-  },
-  inputLabel: {
-    fontSize: typography.fontSizes.sm,
-    fontWeight: '500',
-    color: colors.text,
-    marginBottom: spacing.xs,
+    width: '100%',
+    marginBottom: 20,
+    position: 'relative',
   },
   input: {
-    height: 50,
-    borderWidth: 1,
-    borderColor: colors.gray.medium,
-    borderRadius: borderRadius.md,
-    paddingHorizontal: spacing.md,
+    height: 55,
+    width: '100%',
+    borderWidth: 0,
+    borderRadius: 30,
+    paddingHorizontal: 25,
     fontSize: typography.fontSizes.md,
-    backgroundColor: colors.inputBackground,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    color: colors.text,
   },
-  forgotPassword: {
-    alignSelf: 'flex-end',
-    marginTop: spacing.xs,
-  },
-  forgotPasswordText: {
-    color: colors.primary,
-    fontSize: typography.fontSizes.sm,
+  eyeIcon: {
+    position: 'absolute',
+    right: 20,
+    top: 17,
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   loginButton: {
-    backgroundColor: colors.primary,
-    height: 56,
-    borderRadius: borderRadius.lg,
+    width: '100%',
+    height: 55,
+    borderRadius: 30,
+    marginTop: 30,
+    marginBottom: 30,
+    overflow: 'hidden',
+  },
+  loginButtonInner: {
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: spacing.lg,
-    marginBottom: spacing.lg,
-    ...shadows.sm,
   },
   loginButtonText: {
-    color: colors.background,
+    color: colors.text,
     fontSize: typography.fontSizes.md,
     fontWeight: 'bold',
   },
-  registerContainer: {
+  forgotPasswordContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
   },
-  registerText: {
+  forgotPasswordText: {
     fontSize: typography.fontSizes.sm,
     color: colors.textSecondary,
   },
-  registerLink: {
+  forgotPasswordLink: {
     fontSize: typography.fontSizes.sm,
-    color: colors.primary,
+    color: colors.text,
     fontWeight: 'bold',
   },
 });
