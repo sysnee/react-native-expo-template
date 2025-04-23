@@ -37,7 +37,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos');
+      Alert.alert('Atenção', 'Por favor, preencha todos os campos');
       return;
     }
 
@@ -45,9 +45,31 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
       setIsLoading(true);
       await login({ email, password });
       // A navegação acontecerá automaticamente pelo AuthContext
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro ao fazer login';
-      Alert.alert('Erro de login', errorMessage);
+    } catch (error) {
+      // Tratamento de erro melhorado
+      let errorMessage = 'Ocorreu um erro ao fazer login. Tente novamente.';
+      
+      // Verificar se é um erro do Axios (erro de API)
+      if (error instanceof Error) {
+        if (error.message.includes('401') || error.message.includes('credentials')) {
+          errorMessage = 'Email ou senha incorretos. Verifique suas credenciais.';
+        } else if (error.message.includes('404')) {
+          errorMessage = 'Usuário não encontrado. Verifique seu email.';
+        } else if (error.message.includes('403')) {
+          errorMessage = 'Acesso não autorizado. Entre em contato com o suporte.';
+        } else if (error.message.includes('429')) {
+          errorMessage = 'Muitas tentativas de login. Tente novamente mais tarde.';
+        } else if (error.message.includes('Network Error') || error.message.includes('timeout')) {
+          errorMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
+        } else {
+          // Não mostrar o [object Object], mostrar uma mensagem mais legível
+          errorMessage = error.message && error.message !== '[object Object]' 
+            ? error.message 
+            : 'Erro ao fazer login. Tente novamente mais tarde.';
+        }
+      }
+      
+      Alert.alert('Falha no login', errorMessage);
     } finally {
       setIsLoading(false);
     }

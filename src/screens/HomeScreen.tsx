@@ -31,12 +31,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           style: 'cancel',
         },
         {
-          text: 'Sim, sair',
+          text: 'Sair',
           onPress: async () => {
             await logout();
-            // Em vez de resetar a navegação, vamos apenas terminar este fluxo
-            // O AuthContext vai detectar que o usuário não está mais logado e
-            // vai automaticamente redirecionar para a tela de login
+            // Navegação explícita para a tela de login após o logout
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Login' }],
+            });
           },
         },
       ],
