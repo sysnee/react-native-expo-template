@@ -13,7 +13,7 @@
     "@expo/vector-icons": "^14.0.0",
     "@react-navigation/native": "^6.0.14",
     "@react-navigation/native-stack": "^6.9.2",
-    "axios": "^1.6.8",
+    "axios": "^1.15.2",
     "expo": "~52.0.46",
     "expo-linear-gradient": "~12.7.2",
     "expo-secure-store": "~14.0.1",
