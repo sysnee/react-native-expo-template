@@ -19,7 +19,7 @@
     "expo-secure-store": "~14.0.1",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
-    "react-native": "0.76.9",
+    "react-native": "0.86.2",
     "react-native-paper": "^5.13.3",
     "react-native-screens": "^3.20.0",
     "react-native-vector-icons": "^10.2.0"
